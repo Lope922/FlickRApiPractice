@@ -42,9 +42,10 @@ Partial Class Form1
         '
         'PictureBox1
         '
-        Me.PictureBox1.Location = New System.Drawing.Point(201, 37)
+        Me.PictureBox1.Location = New System.Drawing.Point(256, 80)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(179, 159)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
         Me.PictureBox1.TabIndex = 1
         Me.PictureBox1.TabStop = False
         '
@@ -54,7 +55,7 @@ Partial Class Form1
         Me.DataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
         Me.DataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
         Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Location = New System.Drawing.Point(412, 46)
+        Me.DataGridView1.Location = New System.Drawing.Point(618, 70)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.ReadOnly = True
         Me.DataGridView1.Size = New System.Drawing.Size(240, 150)
@@ -70,15 +71,18 @@ Partial Class Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(691, 341)
+        Me.AutoSize = True
+        Me.ClientSize = New System.Drawing.Size(897, 389)
         Me.Controls.Add(Me.DataGridView1)
         Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.getFlickrInfoBtn)
         Me.Name = "Form1"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Form1"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents getFlickrInfoBtn As System.Windows.Forms.Button
