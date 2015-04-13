@@ -1,0 +1,49 @@
+﻿
+sample response from flickr requesting 3 photos with 1 page Now to translate pictures from stream 
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+  <photos page="1" pages="262437" perpage="3" total="787309">
+    <photo id="16491082313" owner="19116809@N06" secret="0919c1944f" server="8771" far title="The Big Suit Part III" ispublic="1" isfriend="0" isfamily="0" />
+  </photos>
+</rsp>
+
+URL: https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=4f60a04f101ef604ead9be84856d9519&tags=St.+Louis&per_page=3&page=1&format=rest&api_sig=aaa5ef9c2c0ff79f3c34d08d60c79a8a.xml
+
+
+You can construct the source URL to a photo once you know its ID, server ID, farm ID and secret, as returned by many API methods.
+
+The URL takes the following format:
+
+https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+	or
+https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
+	or
+https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{o-secret}_o.(jpg|gif|png)
+* Before November 18th, 2011 the API returned image URLs with hostnames like: "farm{farm-id}.static.flickr.com". Those URLs are still supported.
+
+
+Size Suffixes
+
+The letter suffixes are as follows:
+
+s	small square 75x75
+q	large square 150x150
+t	thumbnail, 100 on longest side
+m	small, 240 on longest side
+n	small, 320 on longest side
+-	medium, 500 on longest side
+z	medium 640, 640 on longest side
+c	medium 800, 800 on longest side†
+b	large, 1024 on longest side*
+h	large 1600, 1600 on longest side†
+k	large 2048, 2048 on longest side†
+o	original image, either a jpg, gif or png, depending on source format
+
+example  
+https://farm1.staticflickr.com/2/1418878_1e92283336_m.jpg
+
+farm-id: 1
+server-id: 2
+photo-id: 1418878
+secret: 1e92283336
+size: m

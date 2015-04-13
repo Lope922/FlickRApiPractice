@@ -3,68 +3,89 @@ Imports System.IO
 Imports FlickrNet
 Imports SimpleOAuth
 Imports System.Xml
+Imports System.Xml.XPath
+
 
 
 Public Class Form1
     '' FLCIKR API KEY 4f60a04f101ef604ead9be84856d9519
     '' FLICKR API SECRET 4e3fc31dff403d28
 
-
-
-    Dim apiKey As String = "4f60a04f101ef604ead9be84856d9519"
-
-    Dim apiSecret As String = "4e3fc31dff403d28"
-
-    Dim searchOptions As New PhotoSearchOptions
-
-    Dim searchCity As String = "Minneapolis"
-
-    Dim flickrThis As New Flickr(apiKey, apiSecret)
-
-    Function OAuthRequestToken() As String
-        Dim tempToken As String = ""
-        tempToken.GetType()
-        Return tempToken
-    End Function
-
-
    
-    Public Function PhotosSearch(searchCity As String) As PhotoCollection
+    'Dim tokenStep1 As String = ""
+
+    'Dim webRequestToken As WebRequest = WebRequest.Create(tokenStep1)
+
+    'Dim tokenResponseStream As Stream = webRequestToken.GetResponse.GetResponseStream()
+
+    'Dim httpDocument As HtmlDocument
 
 
 
-    End Function
+    'Private Sub WriteNewDocument(httpDocument As HtmlDocument)
+    '    If (WebBrowser1.Document IsNot Nothing) Then
+    '        Dim doc As HtmlDocument = tokenResponseStream.Write.Document.OpenNew(True)
+    '        doc.Write("<HTML><BODY>This is a new HTML document.</BODY></HTML>")
+    '    End If
+    'End Sub
+
+    'Dim requestedTest As String = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=df52b9fa8e1632a530e801c286f20f7c&tags=St.+Louis%2C+MO&privacy_filter=1&safe_search=1&content_type=1&per_page=1&page=1&format=rest&auth_token=72157651508263228-ecffc79596f9a26f&api_sig=a8ace12d9ba340200b4567676e2664b7"
+
+    'Dim flickrRequestPhoto As WebRequest = HttpWebRequest.Create(requestedTest)
+
+    'Dim testResponseStream As Stream = flickrRequestPhoto.GetResponse.GetResponseStream()
+
+    'Dim xmlReader As New XmlDocument
+    '    xmlReader.Load(testResponseStream)
 
 
-    '   Calling this method will also clear AuthToken and set OAuthAccessToken and OAuthAccessTokenSecret. 
-    Public Function AuthOAuthGetAccessToken() As OAuthAccessToken
-     
-    End Function
+
 
 
     Private Sub getFlickrInfoBtn_Click(sender As Object, e As EventArgs) Handles getFlickrInfoBtn.Click
-        Dim photoSearchOptions As New PhotoSearchOptions()
-        photoSearchOptions.Tags = "St. Louis"
-        photoSearchOptions.Page = 1
-        Dim cityPhotos As Photo = flickrThis.PhotosSearch(photoSearchOptions.Tags)
-        OAuthRequestToken(CType(apiKey))
-        MessageBox.Show("Here is the token" + OAuthRequestToken().ToString)
-        AuthOAuthGetAccessToken()
+
         Try
-            If flickrThis.IsAuthenticated() = True Then
-                MessageBox.Show("Authentication is true")
-            Else
-                MessageBox.Show("Authentication is false")
-            End If
+            '' still need to rebuild using the flickr.photo.search method with custom search options similar to ones specified here. 
+            '' this search request is for St. Louis, MO. this particular method does not need to be authorized. and most parameters are optional. 
+            Dim requestedTest As String = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=df52b9fa8e1632a530e801c286f20f7c&tags=St.+Louis%2C+MO&privacy_filter=1&safe_search=1&content_type=1&per_page=1&page=1&format=rest&auth_token=72157651508263228-ecffc79596f9a26f&api_sig=a8ace12d9ba340200b4567676e2664b7"
 
-            'flickrThis.TestEcho(apiKey)
-            ' flickrThis.AuthOAuthCheckToken()
-            flickrThis.PhotosSearch(photoSearchOptions)
-        Catch authenticationProblem As AuthenticationRequiredException
-            MessageBox.Show(authenticationProblem.Message)
+            '' create the web request using the above url 
+            Dim flickrRequestPhoto As WebRequest = WebRequest.Create(requestedTest)
+
+            '' store the response stream in the created variable
+            Dim testResponseStream As Stream = flickrRequestPhoto.GetResponse.GetResponseStream()
+
+            '' create a xmldocument to format the response
+            Dim xmlReader As New XmlDocument
+
+            '' select the single xml-rpc response node
+            Dim xmlRPCNode As XmlNode
+
+            xmlReader.Load(testResponseStream)
+
+
+            ' Save the document to a file. White space is 
+            ' preserved (no white space). = true 
+            xmlReader.PreserveWhitespace = False '' set to false to preserve the same format as formatted response 
+            xmlReader.Save("data.xml") '' save the document in the debugger and use response to practice extracting info. 
+
+            
+
+
+            ' Dim xmlRpcElemet As XmlNodeList = xmlReader.SelectNodes("//photos/@farm")
+            '' use this to 
+            Dim farm_1 As XmlNode = xmlReader.SelectSingleNode("//photo/@farm")
+
+            '' had alot of trouble trying to figure out how to set this up to read each element sibling. Had to use innerxml to extract sibling information on the specified path. 
+            '' see example of return data at top of txtFile1
+            MessageBox.Show("Here is the single node photos page from the test response: " + farm_1.InnerXml) '' confirmation that i obtained the desired value needed to request a photo. 
+
+            ''todo get the rest of the elements from the initial response. 
+            '' each web request sent generates a different response of results. 
+            'catch any exceptions and let me know what is going wrong. 
+        Catch ex As Exception
+            MessageBox.Show(ex.Message)
         End Try
-
-
 
     End Sub
 End Class
