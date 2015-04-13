@@ -139,4 +139,17 @@ Public Class Form1
         End Try
 
     End Sub
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+        '' create a web request for the authentication and get an access token to create an initial request 
+        Try
+            ' Dim tokenRequest As WebRequest = WebRequest.Create("https://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=32036da6f917a5a5bf879ce5ba1b6863&format=rest&auth_token=72157651870085376-429a63a14d709dcb&api_sig=7034a717fe5c4d991bdb4c8a641ba986")
+
+            Dim f As Flickr = New Flickr("4f60a04f101ef604ead9be84856d9519")
+
+            MessageBox.Show("Authentication successful")
+        Catch authenticationProblem As Exception
+            MessageBox.Show(authenticationProblem.Message)
+        End Try
+    End Sub
 End Class
