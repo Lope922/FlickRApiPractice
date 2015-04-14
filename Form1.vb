@@ -30,24 +30,46 @@ Public Class Form1
     End Function
 
     Public Function callCityAndState() As String
-        city()
-        state()
+        'city()
+        'state()
+
         MessageBox.Show("city and state " + city() + state())
     End Function
 
 
     Private Sub getFlickrInfoBtn_Click(sender As Object, e As EventArgs) Handles getFlickrInfoBtn.Click
         '' call city and state fuctions 
-        callCityAndState()
-        Dim 
+        ' callCityAndState()
+
+        '' base api method use 
+        '        https://api.flickr.com/services/rest/?method=flickr.photos.search
+        '' api key required to make request. This is a temp key expires every 24 hours
+        '&api_key=348389c8e6dfd154eeccac983fb067b3
+
+        '&tags=St.+Paul%2C+MN&safe_search=1
+
+        '&content_type=1
+
+        '&lat=44.97010040
+        '&lon=-93.08209991
+
+        '&radius=10
+        '&radius_units=mi
+
+        'only asking for 3 requests per page 
+        '&per_page=3
+        '&page=1
+
+        '' returned in a rest -xml format
+        '&format=rest"
+
 
 
         Try
 
             '' still need to rebuild using the flickr.photo.search method with custom search options similar to ones specified here. 
             '' this search request is for St. Louis, MO. this particular method does not need to be authorized. and most parameters are optional. 
-            Dim requestedTest As String = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=32036da6f917a5a5bf879ce5ba1b6863&tags=St.+Paul%2C+MN&safe_search=1&content_type=1&media=photos&has_geo=-93.08209991&lat=44.97010040&radius_units=mi&per_page=3&page=1&format=rest"
-
+            Dim requestedTest As String = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c4471b9774deb717aa6c61f6b88e259a&tags=St.Paul&per_page=3&page=1&format=rest"
 
             '' create the web request using the above url 
             Dim flickrRequestPhoto As WebRequest = WebRequest.Create(requestedTest)
@@ -59,7 +81,7 @@ Public Class Form1
             Dim xmlReader As New XmlDocument
 
             '' select the single xml-rpc response node
-            Dim xmlRPCNode As XmlNode
+            ' Dim xmlRPCNode As XmlNode
 
             xmlReader.Load(testResponseStream)
 
@@ -109,21 +131,37 @@ Public Class Form1
 
             'For Each number As Integer In 1 to 3
 
-            Dim url_PhotoRequest As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm1_valueXML.InnerXml,
+            Dim url_PhotoRequest1 As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm1_valueXML.InnerXml,
                                                                url_builder_for_photo_serverID1_value_from_XML.InnerXml, url_builder_for_photo_ID1_valueXML.InnerXml,
                                                                url_builder_for_photo_secret1_value_from_XML.InnerXml)
+
+            Dim url_PhotoRequest2 As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm2_valueXML.InnerXml,
+                                                             url_builder_for_photo_serverID2_value_from_XML.InnerXml, url_builder_for_photo_ID2_valueXML.InnerXml,
+                                                             url_builder_for_photo_secret2_value_from_XML.InnerXml)
+            Dim url_PhotoRequest3 As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm3_valueXML.InnerXml,
+                                                             url_builder_for_photo_serverID3_value_from_XML.InnerXml, url_builder_for_photo_ID3_valueXML.InnerXml,
+                                                             url_builder_for_photo_secret3_value_from_XML.InnerXml)
+            
             ''render this image to an image box to be displayed on a bing maps api. Or look into using Flickrs maps 
 
             '"Copy and paste this link into a browser and see what photo is returned " + url_PhotoRequest)
             '' tried to display to messagebox , but could not click on its contents. 
 
-            Dim PhotoRequest As WebRequest = WebRequest.Create(url_PhotoRequest)
-
-            Dim photoResponseStream As Stream = PhotoRequest.GetResponse.GetResponseStream()
-
+            Dim PhotoRequest1 As WebRequest = WebRequest.Create(url_PhotoRequest1)
+            Dim photoResponseStream As Stream = PhotoRequest1.GetResponse.GetResponseStream()
             Dim flickrPhotoFromStream As Image = Image.FromStream(photoResponseStream)
-
             PictureBox1.Image = flickrPhotoFromStream
+
+            Dim PhotoRequest2 As WebRequest = WebRequest.Create(url_PhotoRequest2)
+            Dim photoResponseStream2 As Stream = PhotoRequest2.GetResponse.GetResponseStream()
+            Dim flickrPhotoFromStream2 As Image = Image.FromStream(photoResponseStream2)
+            PictureBox2.Image = flickrPhotoFromStream2
+
+            Dim PhotoRequest3 As WebRequest = WebRequest.Create(url_PhotoRequest3)
+            Dim photoResponseStream3 As Stream = PhotoRequest3.GetResponse.GetResponseStream()
+            Dim flickrPhotoFromStream3 As Image = Image.FromStream(photoResponseStream3)
+            PictureBox3.Image = flickrPhotoFromStream3
+
 
             'error 404 page not found 
             '' need a try catch block when i reach this point. 
@@ -140,16 +178,16 @@ Public Class Form1
 
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
-        '' create a web request for the authentication and get an access token to create an initial request 
-        Try
-            ' Dim tokenRequest As WebRequest = WebRequest.Create("https://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=32036da6f917a5a5bf879ce5ba1b6863&format=rest&auth_token=72157651870085376-429a63a14d709dcb&api_sig=7034a717fe5c4d991bdb4c8a641ba986")
+    'Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+    '' create a web request for the authentication and get an access token to create an initial request 
+    '    Try
+    '        ' Dim tokenRequest As WebRequest = WebRequest.Create("https://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=32036da6f917a5a5bf879ce5ba1b6863&format=rest&auth_token=72157651870085376-429a63a14d709dcb&api_sig=7034a717fe5c4d991bdb4c8a641ba986")
 
-            Dim f As Flickr = New Flickr("4f60a04f101ef604ead9be84856d9519")
+    '        Dim f As Flickr = New Flickr("4f60a04f101ef604ead9be84856d9519")
 
-            MessageBox.Show("Authentication successful")
-        Catch authenticationProblem As Exception
-            MessageBox.Show(authenticationProblem.Message)
-        End Try
-    End Sub
+    '        MessageBox.Show("Authentication successful")
+    '    Catch authenticationProblem As Exception
+    '        MessageBox.Show(authenticationProblem.Message)
+    '    End Try
+    'End Sub
 End Class
