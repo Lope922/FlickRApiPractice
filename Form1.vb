@@ -71,6 +71,8 @@ Public Class Form1
             '' this search request is for St. Louis, MO. this particular method does not need to be authorized. and most parameters are optional. 
             Dim requestedTest As String = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c4471b9774deb717aa6c61f6b88e259a&tags=St.Paul&per_page=3&page=1&format=rest"
 
+
+
             '' create the web request using the above url 
             Dim flickrRequestPhoto As WebRequest = WebRequest.Create(requestedTest)
 
@@ -190,4 +192,9 @@ Public Class Form1
     '        MessageBox.Show(authenticationProblem.Message)
     '    End Try
     'End Sub
+
+    
+    Private Sub txtBoxCityName_Click(sender As Object, e As EventArgs) Handles txtBoxCityName.Click
+        txtBoxCityName.Text = ""
+    End Sub
 End Class
