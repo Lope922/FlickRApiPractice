@@ -63,3 +63,7 @@ Note: The Flickr API exposes identifiers for users, photos, photosets and other 
 
 Endpoint
 
+ ' Save the document to a file. White space is 
+    '    ' preserved (no white space). = true 
+    '    webResonseDocument.PreserveWhitespace = False '' set to false to preserve the same format as formatted response 
+    '    webResonseDocument.Save("authenticate.xml") '' save the document in the debugger and use response to practice extracting info. 

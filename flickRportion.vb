@@ -8,7 +8,7 @@ Public Class flickRportion
     '' for flikr i will need a web request for the city and state search built on these qualities. 
 
     '' this returns the string built ready to be sent. NO ERROR CHECKING PRIOR. 
-    Private Function searchSettings() As String
+    Public Function searchSettings() As String
         ' use this base url to generate a request. Replace api_ key with my api key 
         '       URL: https://api.flickr.com/services/rest/?method=flickr.photos.search
         '&api_key=2c33c4c48c9fa2f189c0c08e45be9322
@@ -36,8 +36,11 @@ Public Class flickRportion
     '' this does not return an exception on all paths. WHY?
 
 
+
     '' this function needs access to the search settings because that is what they need to be sent as. May want to consider renaming. 
-    Private Function send_request_for_photos(searchsettings As String) As Stream
+    'ACCEPTS: SEARCHSETTINGS == STRING URLBUILT WITH SEARCH SETTINGS DEFINED WITHIN THE URL 
+    'RETURNS: AN XMLDOCUMENT WITH A RESPONSE FROM THE WEBSITE. 
+    Public Function send_request_for_photos(searchsettings As String) As XmlDocument
         '' this function will return the photos as a stream because that is how i want to read them in order to be able to print to each photo box 
 
         ' create the web request first 
@@ -50,24 +53,88 @@ Public Class flickRportion
         '' step 1 create the stream from photos 
         Dim xmlResponse As Stream = flickrInitialrequest.GetResponse.GetResponseStream()
 
-        Dim xmlweatherReader As New XmlDocument
-        xmlweatherReader.Load(xmlResponse)
+        Dim xmlflickrReader As New XmlDocument
+        xmlflickrReader.Load(xmlResponse)
 
 
-
+        ' Save the document to a file. White space is 
+        '   preserved (no white space). = true 
+        xmlflickrReader.PreserveWhitespace = False '' set to false to preserve the same format as formatted response 
+        xmlflickrReader.Save("flickrinitialRequest.txt") '' save the document in the debugger and use response to practice extracting
 
         '' save the response to a document called.. and read it 
         '' get the filewriter
-        Dim file As System.IO.StreamWriter
-        '' write the file to a file with the file name 
-        file = My.Computer.FileSystem.OpenTextFileWriter("C:\Desktop\FirstBreakPoint.txt", True)
-        file.WriteLine(xmlResponse)
-        file.Close()
+        'Dim file As System.IO.StreamWriter
+        ' '' write the file to a file with the file name 
+        'file = My.Computer.FileSystem.OpenTextFileWriter("C:\Users\Lope\Desktop\FirstBreakPoint.txt", True)
+        'file.WriteLine(xmlResponse)
+        'file.Close()
         '' now save to a file to see what is being written and also confirm. then search through and sort the info needed with the next loop to be created
 
-
+        '' don't forget to close the connection 
+        xmlResponse.Close()
 
         '' todo create the loop that loops through the data and saves/ maps them. Think about using a hashtable or hashmap. It could be useful here plus i need the practice.
+
+        Return xmlflickrReader
+        '' this is where i am stuck and may need to refer to a hashmap 
+    End Function
+
+    '' get the info and return it either as a node list. or a stream to read and write to the photo boxes 
+    Public Function extractInfoFromStream() As XmlNodeList
+        Try
+            '' read from the stream 
+            Dim xmlResponseDocument As New XmlDocument
+            xmlResponseDocument.Load("flickrinitialRequest.txt")
+
+
+            'doc.Load("C:\Users\Lope\Desktop\flickrinitialRequest.xml")
+
+            '' so for each element for a photo request create a request. 
+
+            '' declare the location of each node that i accessed to request a photo.
+
+            For node_in_nodeLIst As Integer = 1 To 6 Step 1
+
+
+                '' lets try an enhanced for loop 
+
+                Dim secret As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@secret")
+
+                '' now that the innnertext from that node and save it to request a photo. 
+                Dim farm As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@farm")
+
+                Dim server As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@sever")
+
+                Dim photoid As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@id")
+
+            Next
+            Dim photo_url_request As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", farm, server, photoid, secret)
+
+            '' now for each node in nodelist create web reqeust using the formate above and 
+
+            MessageBox.Show("Here is the secret test" + secret.ToString)
+
+            Return secret
+            MessageBox.Show("Here:" + secret.ToString)
+
+        Catch xmlpath As XmlException
+            MessageBox.Show("problem requesting nodes. Contact developer ")
+        End Try
+        '  Dim nodeList As XmlNodeList
+
+        'Dim root As XmlNode = doc.DocumentElement
+
+        For Number As Integer = 1 To 6 Step 1
+            ' load the xmlResponse and reach eash number from the stream. 
+            '' select single node number 
+            '' unless number equals 1 then return that single node 
+
+            '' else format each request per number{#} format. 
+        Next
+
+
+
 
 
 
