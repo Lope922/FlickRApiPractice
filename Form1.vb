@@ -1,7 +1,5 @@
 ﻿Imports System.Net
 Imports System.IO
-Imports FlickrNet
-Imports SimpleOAuth
 Imports System.Xml
 Imports System.Xml.XPath
 
@@ -36,18 +34,65 @@ Public Class Form1
         MessageBox.Show("city and state " + city() + state())
     End Function
 
+    '' DON'T NEED TO AUTHENTICATE FOR A PHOTO SEARCH. oNLY NEED TO AUTHENTICATE FOR MORE FLICKR INTERATIONS.
+    'Private Sub getAuthenticated()
 
+    '    Dim baseURl As String = "https://www.flickr.com/services/oauth/request_token"
+    '    'oauth_nonce=95613465
+    '    '&oauth_timestamp=1305586162
+    '    '&oauth_consumer_key=653e7a6ecc1d528c516cc8f92cf98611
+    '    '&oauth_signature_method=HMAC-SHA1
+    '    '&oauth_version=1.0
+    '    '&oauth_signature=7w18YS2bONDPL%2FzgyzP5XTr5af4%3D
+    '    '&oauth_callback=http%3A%2F%2Fwww.example.com
+
+
+    '    Dim requestToken As WebRequest = WebRequest.Create(baseURl)
+
+    '    Dim tokenRequestResponseStream As Stream = requestToken.GetResponse.GetResponseStream()
+
+    '    Dim webResonseDocument As New XmlDocument
+    '    webResonseDocument.Load(tokenRequestResponseStream)
+
+    '    ' Save the document to a file. White space is 
+    '    ' preserved (no white space). = true 
+    '    webResonseDocument.PreserveWhitespace = False '' set to false to preserve the same format as formatted response 
+    '    webResonseDocument.Save("authenticate.xml") '' save the document in the debugger and use response to practice extracting info. 
+
+
+
+
+    'End Sub
+
+
+    Private Sub getEachPhotoInfo(xmlReader As XmlDocument) '' pass it the xmldocument to read. 
+        '' read the response and extract the necessary information. All i need to extract is the info required for each photo is 
+        '' the {farm-id}{server-id}/{id}_{secret}.jpg requested as a jpg format
+
+        '' may need to load the photo response from xmldocument and read through it to find each line that contains the necessary info. 
+
+        'For Each node In XmlDocument as xmlnode
+        '    If nodenumber = 1 Then
+        '        XmlReader.SelectSingleNode("//photo/@secret")
+        '        XmlReader.SelectSingleNode("//photo/@server")
+        '        XmlReader.SelectSingleNode("//photo/@id")
+        '        XmlReader.SelectSingleNode("//photo/@farm")
+        '        Else string.Format xmlselectSinglenode @ number for each node necessary and add it to the node list. 
+
+
+        'then for each node read the request from a stream.
+
+        ' Next
+
+
+
+
+    End Sub
     Private Sub getFlickrInfoBtn_Click(sender As Object, e As EventArgs) Handles getFlickrInfoBtn.Click
         '' call city and state fuctions 
         ' callCityAndState()
 
-        '' base api method use 
-        '        https://api.flickr.com/services/rest/?method=flickr.photos.search
-        '' api key required to make request. This is a temp key expires every 24 hours
-        '&api_key=348389c8e6dfd154eeccac983fb067b3
-
-        '&tags=St.+Paul%2C+MN&safe_search=1
-
+     
         '&content_type=1
 
         '&lat=44.97010040
@@ -60,12 +105,17 @@ Public Class Form1
         '&per_page=3
         '&page=1
 
-        '' returned in a rest -xml format
+        '' returned in a rest format
         '&format=rest"
+
+        ''TODO RETURN AS A XML-RPC FORMAT
 
 
 
         Try
+            '' LETS TRY AND IMPORT MY CLASS AND USE IT.... 
+
+
 
             '' still need to rebuild using the flickr.photo.search method with custom search options similar to ones specified here. 
             '' this search request is for St. Louis, MO. this particular method does not need to be authorized. and most parameters are optional. 
@@ -95,6 +145,9 @@ Public Class Form1
 
             '' need to obtain xml-rpc siblings at the following values 
             ''secret path single node request = //photo/@secret this returns the location. Need to access inner text/xml by calling the innner text method 
+
+
+
 
             Dim url_builder_for_photo_secret1_value_from_XML As XmlNode = xmlReader.SelectSingleNode("//photo/@secret")
             Dim url_builder_for_photo_secret2_value_from_XML As XmlNode = xmlReader.SelectSingleNode("//photo[2]/@secret")
@@ -133,6 +186,9 @@ Public Class Form1
 
             'For Each number As Integer In 1 to 3
 
+
+            '' TODO : FOR EACH URL PHOTO READ AS A STREAM AND PROCESS EACH PHOTO. 
+
             Dim url_PhotoRequest1 As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm1_valueXML.InnerXml,
                                                                url_builder_for_photo_serverID1_value_from_XML.InnerXml, url_builder_for_photo_ID1_valueXML.InnerXml,
                                                                url_builder_for_photo_secret1_value_from_XML.InnerXml)
@@ -143,7 +199,7 @@ Public Class Form1
             Dim url_PhotoRequest3 As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", url_builder_for_farm3_valueXML.InnerXml,
                                                              url_builder_for_photo_serverID3_value_from_XML.InnerXml, url_builder_for_photo_ID3_valueXML.InnerXml,
                                                              url_builder_for_photo_secret3_value_from_XML.InnerXml)
-            
+
             ''render this image to an image box to be displayed on a bing maps api. Or look into using Flickrs maps 
 
             '"Copy and paste this link into a browser and see what photo is returned " + url_PhotoRequest)
@@ -180,21 +236,38 @@ Public Class Form1
 
     End Sub
 
-    'Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
-    '' create a web request for the authentication and get an access token to create an initial request 
-    '    Try
-    '        ' Dim tokenRequest As WebRequest = WebRequest.Create("https://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=32036da6f917a5a5bf879ce5ba1b6863&format=rest&auth_token=72157651870085376-429a63a14d709dcb&api_sig=7034a717fe5c4d991bdb4c8a641ba986")
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles Me.Load
+        '' create a web request for the authentication and get an access token to create an initial request 
+        'OAuth.OAuthBase.SignatureTypes.HMACSHA1.ToString()
 
-    '        Dim f As Flickr = New Flickr("4f60a04f101ef604ead9be84856d9519")
+        'Try
 
-    '        MessageBox.Show("Authentication successful")
-    '    Catch authenticationProblem As Exception
-    '        MessageBox.Show(authenticationProblem.Message)
-    '    End Try
-    'End Sub
+        '    Dim tokenRequest As WebRequest = WebRequest.Create("https://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=4f60a04f101ef604ead9be84856d9519&format=rest&auth_token=72157651870085376-429a63a14d709dcb&api_sig=7034a717fe5c4d991bdb4c8a641ba986")
+        '  searchSettings()
 
-    
+        '    Dim f As Flickr = New Flickr("4f60a04f101ef604ead9be84856d9519")
+
+        '    MessageBox.Show("Authentication successful")
+
+        '        Catch authenticationProblem As Exception
+        'MessageBox.Show(authenticationProblem.Message)
+
+
+
+        'End Try
+    End Sub
+
+   
+
+
+
     Private Sub txtBoxCityName_Click(sender As Object, e As EventArgs) Handles txtBoxCityName.Click
         txtBoxCityName.Text = ""
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+
+        MessageBox.Show("This testing hasn't been initialized ", "Hey man!", MessageBoxButtons.OK, MessageBoxIcon.Hand)
     End Sub
 End Class

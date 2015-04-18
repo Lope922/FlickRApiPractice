@@ -47,3 +47,19 @@ server-id: 2
 photo-id: 1418878
 secret: 1e92283336
 size: m
+
+
+
+
+The REQUIRED parameter method is used to specify the calling method.
+
+The REQUIRED parameter api_key is used to specify your API Key.
+
+The optional parameter format is used to specify a response format.
+
+The arguments, responses and error codes for each method are listed on the method's spec page. Methods are lists on the API index page.
+
+Note: The Flickr API exposes identifiers for users, photos, photosets and other uniquely identifiable objects. These IDs should always be treated as opaque strings, rather than integers of any specific type. The format of the IDs can change over time, so relying on the current format may cause you problems in the future.
+
+Endpoint
+
