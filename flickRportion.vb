@@ -88,6 +88,10 @@ Public Class flickRportion
             xmlResponseDocument.Load("flickrinitialRequest.txt")
 
 
+            '' create a stream to handle the return of flow of pictures that is about to happen, and then don't forget to close it. 
+
+            Dim flickrPhotoSearchResultsResponseStream As Stream
+
             'doc.Load("C:\Users\Lope\Desktop\flickrinitialRequest.xml")
 
             '' so for each element for a photo request create a request. 
@@ -96,27 +100,50 @@ Public Class flickRportion
 
             For node_in_nodeLIst As Integer = 1 To 6 Step 1
 
-
                 '' lets try an enhanced for loop 
 
+                '' or maybe even a hashmap. 
                 Dim secret As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@secret")
+                Dim secreStringformat As String = String.Format("//photo[{0}]/@secret", node_in_nodeLIst)
 
+                Dim othersecretnodes As XmlNode = xmlResponseDocument.SelectSingleNode(secreStringformat)
                 '' now that the innnertext from that node and save it to request a photo. 
+
                 Dim farm As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@farm")
+                Dim farmStringformat As String = String.Format("//photo[{0}]/@farm", node_in_nodeLIst)
+                Dim otherfarmnodes As XmlNode = xmlResponseDocument.SelectSingleNode(farmStringformat)
 
                 Dim server As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@sever")
+                Dim serverStringFormat As String = String.Format("//photo[{0}]/@server", node_in_nodeLIst)
+                Dim otherservernodes As XmlNode = xmlResponseDocument.SelectSingleNode(serverStringFormat)
 
                 Dim photoid As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@id")
+                Dim photoidStringformat As String = String.Format("//photo[{0}]/@id", node_in_nodeLIst)
+                Dim otherphotoIDnodes As XmlNode = xmlResponseDocument.SelectSingleNode(photoidStringformat)
 
+                If node_in_nodeLIst = 1 Then
+
+                    '' this is the inital request because it won't reqeust the write node for each value. 
+                    Dim urlCreator As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", farm, server, photoid, secret)
+
+                    Dim sendfirstURL As WebRequest = WebRequest.Create(urlCreator)
+
+                    '' figure out how to create the web request and read the response stream into each picture box in the form. LOOK INTO STREAMS AND WHY THIS ISN'T WORKING. 
+                    flickrPhotoSearchResultsResponseStream.getResponse.getResponsetStream()
+                Else
+
+                    Dim evolvingUrlCreator As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", otherfarmnodes, otherservernodes, otherphotoIDnodes, othersecretnodes)
+
+
+                End If
             Next
-            Dim photo_url_request As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", farm, server, photoid, secret)
 
             '' now for each node in nodelist create web reqeust using the formate above and 
 
-            MessageBox.Show("Here is the secret test" + secret.ToString)
+            '  MessageBox.Show("Here is the secret test" + secret.ToString)
 
-            Return secret
-            MessageBox.Show("Here:" + secret.ToString)
+            ' Return secret
+            'MessageBox.Show("Here:" + secret.ToString)
 
         Catch xmlpath As XmlException
             MessageBox.Show("problem requesting nodes. Contact developer ")
