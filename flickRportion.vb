@@ -3,6 +3,8 @@ Imports System.Net
 Imports System.Xml
 
 Public Class flickRportion
+    Private urlRequestList As ArrayList
+
     '' here is where are the flickr interation will be 
 
     '' for flikr i will need a web request for the city and state search built on these qualities. 
@@ -80,17 +82,15 @@ Public Class flickRportion
         '' this is where i am stuck and may need to refer to a hashmap 
     End Function
 
-    '' get the info and return it either as a node list. or a stream to read and write to the photo boxes 
-    Public Function extractInfoFromStream() As XmlNodeList
+    '' get the info and return it either as an arraylist. Next create a method to read from the arraylist and make the requests for images. 
+    Public Sub extractInfoFromStream(urlRequestList As ArrayList)
         Try
             '' read from the stream 
             Dim xmlResponseDocument As New XmlDocument
             xmlResponseDocument.Load("flickrinitialRequest.txt")
 
 
-            '' create a stream to handle the return of flow of pictures that is about to happen, and then don't forget to close it. 
 
-            Dim flickrPhotoSearchResultsResponseStream As Stream
 
             'doc.Load("C:\Users\Lope\Desktop\flickrinitialRequest.xml")
 
@@ -103,39 +103,62 @@ Public Class flickRportion
                 '' lets try an enhanced for loop 
 
                 '' or maybe even a hashmap. 
-                Dim secret As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@secret")
+                Dim secret As XmlNode = xmlResponseDocument.SelectSingleNode("//photo/@secret")
+
                 Dim secreStringformat As String = String.Format("//photo[{0}]/@secret", node_in_nodeLIst)
 
                 Dim othersecretnodes As XmlNode = xmlResponseDocument.SelectSingleNode(secreStringformat)
                 '' now that the innnertext from that node and save it to request a photo. 
 
-                Dim farm As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@farm")
+                Dim farm As XmlNode = xmlResponseDocument.SelectSingleNode("//photo/@farm")
                 Dim farmStringformat As String = String.Format("//photo[{0}]/@farm", node_in_nodeLIst)
                 Dim otherfarmnodes As XmlNode = xmlResponseDocument.SelectSingleNode(farmStringformat)
 
-                Dim server As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@sever")
+                Dim server As XmlNode = xmlResponseDocument.SelectSingleNode("//photo/@sever")
                 Dim serverStringFormat As String = String.Format("//photo[{0}]/@server", node_in_nodeLIst)
                 Dim otherservernodes As XmlNode = xmlResponseDocument.SelectSingleNode(serverStringFormat)
 
-                Dim photoid As XmlNodeList = xmlResponseDocument.SelectNodes("//photo/@id")
+                Dim photoid As XmlNode = xmlResponseDocument.SelectSingleNode("//photo/@id")
                 Dim photoidStringformat As String = String.Format("//photo[{0}]/@id", node_in_nodeLIst)
                 Dim otherphotoIDnodes As XmlNode = xmlResponseDocument.SelectSingleNode(photoidStringformat)
 
                 If node_in_nodeLIst = 1 Then
 
                     '' this is the inital request because it won't reqeust the write node for each value. 
-                    Dim urlCreator As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", farm, server, photoid, secret)
+                    Dim urlCreator As String
+                    urlCreator = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", farm.InnerText, server.InnerText, photoid.InnerText, secret.InnerText)
 
-                    Dim sendfirstURL As WebRequest = WebRequest.Create(urlCreator)
+                    '' need to create an arraylist to store the urls that will be sent as request. 
 
-                    '' figure out how to create the web request and read the response stream into each picture box in the form. LOOK INTO STREAMS AND WHY THIS ISN'T WORKING. 
-                    flickrPhotoSearchResultsResponseStream.getResponse.getResponsetStream()
+                    urlRequestList.Add(urlCreator)
+
+                    '' may want to end this function here when it returns an arraylist of the urls builts to send the requests for the photo stream. 
                 Else
 
-                    Dim evolvingUrlCreator As String = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", otherfarmnodes, otherservernodes, otherphotoIDnodes, othersecretnodes)
+                    Dim evolvingUrlCreator As String
+                    evolvingUrlCreator = String.Format("https://farm{0}.staticflickr.com/{1}/{2}_{3}.jpg", otherfarmnodes.InnerText, otherservernodes.InnerText, otherphotoIDnodes.InnerText, othersecretnodes.InnerText)
+
+                    urlRequestList.Add(evolvingUrlCreator)
+
+                    'Dim sendfirstURL As WebRequest = WebRequest.Create(urlCreator)
+
+
+                    '' figure out how to create the web request and read the response stream into each picture box in the form. LOOK INTO STREAMS AND WHY THIS ISN'T WORKING. 
+
+                    '' create a stream to handle the return of flow of pictures that is about to happen, and then don't forget to close it. 
+
+                    ' Dim flickrPhotoSearchResultsResponseStream As Stream = sendfirstURL.GetResponse.GetResponseStream()
+
+                    '                   Dim firstphoto As Image = Image.FromStream(flickrPhotoSearchResultsResponseStream)
+
 
 
                 End If
+
+
+            Next
+            For Each urlrequest As String In urlRequestList
+                Console.WriteLine(urlrequest)
             Next
 
             '' now for each node in nodelist create web reqeust using the formate above and 
@@ -151,21 +174,7 @@ Public Class flickRportion
         '  Dim nodeList As XmlNodeList
 
         'Dim root As XmlNode = doc.DocumentElement
-
-        For Number As Integer = 1 To 6 Step 1
-            ' load the xmlResponse and reach eash number from the stream. 
-            '' select single node number 
-            '' unless number equals 1 then return that single node 
-
-            '' else format each request per number{#} format. 
-        Next
-
-
-
-
-
-
-    End Function
+    End Sub
 
 
 End Class

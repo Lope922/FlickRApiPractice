@@ -4,12 +4,16 @@ Imports System.Xml
 Imports System.Xml.XPath
 
 
-'' also need to setup background workers and handle errors
+'' also need to setup background workers and handle erro
 
 
 Public Class Form1
     '' FLCIKR API KEY 4f60a04f101ef604ead9be84856d9519
     '' FLICKR API SECRET 4e3fc31dff403d28
+
+    '' this array list is declared and then sent into the method that extracts the informationa and each photo reqeust url will be saved as a arraylist poisition. I chose an arraylist so that the 
+    '' photo request has room to grow. 
+    Public photoUrlRequests As ArrayList
 
     Public Function city() As String
         Dim cityFromTextBox As String
@@ -133,7 +137,7 @@ Public Class Form1
 
 
 
-        testClass.extractInfoFromStream()
+        testClass.extractInfoFromStream(photoUrlRequests)
 
         '' next try reading from stream to picture boxes. 
 
